@@ -1,0 +1,18 @@
+.nav {
+  padding: var(--theme-spacing-2) var(--theme-spacing-4);
+
+  & .nav-list {
+    display: flex;
+    & > *:not(:last-child) {
+      margin-right: var(--theme-spacing-2);
+    }
+  }
+}
+
+.header {
+  padding: var(--theme-spacing-2) var(--theme-spacing-4);
+}
+
+.main {
+  padding: var(--theme-spacing-2) var(--theme-spacing-4);
+}
