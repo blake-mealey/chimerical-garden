@@ -13,11 +13,8 @@ import './theme.css';
 import styles from './layout.module.css';
 import { Link } from 'gatsby';
 
-interface LayoutProps {
-  title: string;
-}
-
-const Layout: FunctionComponent<LayoutProps> = ({ children, title }) => {
+const Layout: FunctionComponent = ({ children }) => {
+  console.log(location);
   return (
     <div>
       <nav className={styles.nav}>
@@ -31,11 +28,16 @@ const Layout: FunctionComponent<LayoutProps> = ({ children, title }) => {
         </ul>
       </nav>
       <header className={styles.header}>
-        <h1>{title}</h1>
+        <h1>{`~${window.location.pathname}`}</h1>
       </header>
-      <main className={styles.main}>{children}</main>
+      <main className={styles.main}>
+        {/* TODO: <SEO title={frontmatter.title} /> */}
+        {children}
+      </main>
     </div>
   );
 };
+
+// TODO: Get frontmatter
 
 export default Layout;
