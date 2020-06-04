@@ -4,6 +4,8 @@
   --theme-bg: #011627;
   --theme-fg: #ffffffcc;
 
+  --theme-selection-bg: #5f7e9779;
+
   --theme-btn: #21c7a8;
   --theme-primary: #22da6e;
 
@@ -15,6 +17,10 @@
   --theme-spacing-4: 64px;
 
   font-size: 15px;
+}
+
+::selection {
+  background-color: var(--theme-selection-bg);
 }
 
 body,
