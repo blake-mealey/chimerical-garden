@@ -48,21 +48,23 @@ interface PageProps {
 const Layout: FunctionComponent<PageProps> = ({
   children,
   path,
-  pageContext: { frontmatter },
+  pageContext,
 }) => {
+  const { frontmatter } = pageContext || {};
+
   const unpublished =
-    frontmatter.type === 'post' && frontmatter.status !== 'published';
+    frontmatter?.type === 'post' && frontmatter?.status !== 'published';
 
   return (
     <div>
-      <SEO title={frontmatter.title} />
+      <SEO title={frontmatter?.title} />
 
       <Nav />
 
       <header className={clsx(styles.block, styles.header)}>
         <h1>{`~${path}`}</h1>
 
-        {unpublished && <Badge style="warning">{frontmatter.status}</Badge>}
+        {unpublished && <Badge style="warning">{frontmatter?.status}</Badge>}
       </header>
 
       <main className={clsx(styles.block, styles.main)}>{children}</main>
