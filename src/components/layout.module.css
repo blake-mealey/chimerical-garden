@@ -15,4 +15,5 @@
 
 .main {
   padding: var(--theme-spacing-2) var(--theme-spacing-4);
+  padding-top: 0;
 }

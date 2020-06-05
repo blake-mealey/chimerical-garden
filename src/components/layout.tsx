@@ -13,20 +13,29 @@ import './theme.css';
 import styles from './layout.module.css';
 import { Link } from 'gatsby';
 
+const Nav: FunctionComponent = () => {
+  return (
+    <nav className={styles.nav}>
+      <ul className={styles.navList}>
+        <li>
+          <Link to="/">home</Link>
+        </li>
+        <li>
+          <Link to="/work">work</Link>
+        </li>
+        <li>
+          <Link to="/posts">posts</Link>
+        </li>
+      </ul>
+    </nav>
+  );
+};
+
 const Layout: FunctionComponent = ({ children }) => {
   return (
     <div>
       {/* TODO: <SEO title={frontmatter.title} /> */}
-      <nav className={styles.nav}>
-        <ul className={styles.navList}>
-          <li>
-            <Link to="/">home</Link>
-          </li>
-          <li>
-            <Link to="/posts">posts</Link>
-          </li>
-        </ul>
-      </nav>
+      <Nav />
       <header className={styles.header}>
         <h1>{`~${window.location.pathname}`}</h1>
       </header>
