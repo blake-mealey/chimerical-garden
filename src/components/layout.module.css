@@ -12,6 +12,7 @@
 .header {
   display: flex;
   align-items: center;
+  max-width: none;
 
   & > *:not(:last-child) {
     margin-right: var(--theme-spacing-2);
