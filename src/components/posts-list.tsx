@@ -5,7 +5,11 @@ import getPostPath from '../getPostPath';
 const PostsLists: FunctionComponent = () => {
   const data = useStaticQuery(graphql`
     query {
-      allMdx(filter: { frontmatter: { type: { eq: "post" } } }) {
+      allMdx(
+        filter: {
+          frontmatter: { type: { eq: "post" }, status: { eq: "published" } }
+        }
+      ) {
         nodes {
           id
           frontmatter {
@@ -16,8 +20,8 @@ const PostsLists: FunctionComponent = () => {
       }
     }
   `);
+
   const { nodes: posts } = data.allMdx;
-  console.log(posts);
 
   return (
     <ul>
