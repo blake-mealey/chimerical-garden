@@ -9,6 +9,15 @@
   transition: padding 0.1s ease-in-out;
 }
 
+.header {
+  display: flex;
+  align-items: center;
+
+  & > *:not(:last-child) {
+    margin-right: var(--theme-spacing-2);
+  }
+}
+
 .nav {
   & .nav-list {
     display: flex;

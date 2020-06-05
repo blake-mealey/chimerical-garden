@@ -8,6 +8,8 @@
 
   --theme-primary: #22da6e;
   --theme-secondary: #21c7a8;
+  --theme-warn-bg: #ffca28;
+  --theme-warn-fg: var(--theme-bg);
 
   --theme-hover-opacity: 0.75;
 

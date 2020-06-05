@@ -13,6 +13,8 @@ import './reset.css';
 import './theme.css';
 
 import styles from './layout.module.css';
+import SEO from './seo';
+import Badge from './badge';
 
 const Nav: FunctionComponent = () => {
   return (
@@ -32,23 +34,40 @@ const Nav: FunctionComponent = () => {
   );
 };
 
-interface LayoutProps {
-  location: Location;
+interface PageProps {
+  path: string;
+  pageContext: {
+    frontmatter: {
+      type: 'post' | 'page';
+      title: string;
+      status?: 'draft' | 'published';
+    };
+  };
 }
 
-const Layout: FunctionComponent<LayoutProps> = ({ children, location }) => {
+const Layout: FunctionComponent<PageProps> = ({
+  children,
+  path,
+  pageContext: { frontmatter },
+}) => {
+  const unpublished =
+    frontmatter.type === 'post' && frontmatter.status !== 'published';
+
   return (
     <div>
-      {/* TODO: <SEO title={frontmatter.title} /> */}
+      <SEO title={frontmatter.title} />
+
       <Nav />
-      <header className={styles.block}>
-        <h1>{`~${location?.pathname}`}</h1>
+
+      <header className={clsx(styles.block, styles.header)}>
+        <h1>{`~${path}`}</h1>
+
+        {unpublished && <Badge style="warning">{frontmatter.status}</Badge>}
       </header>
+
       <main className={clsx(styles.block, styles.main)}>{children}</main>
     </div>
   );
 };
-
-// TODO: Get frontmatter
 
 export default Layout;
