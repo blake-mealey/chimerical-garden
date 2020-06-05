@@ -6,16 +6,17 @@
  */
 
 import React, { FunctionComponent } from 'react';
+import { Link } from 'gatsby';
+import clsx from 'clsx';
 
 import './reset.css';
 import './theme.css';
 
 import styles from './layout.module.css';
-import { Link } from 'gatsby';
 
 const Nav: FunctionComponent = () => {
   return (
-    <nav className={styles.nav}>
+    <nav className={clsx(styles.block, styles.nav)}>
       <ul className={styles.navList}>
         <li>
           <Link to="/">home</Link>
@@ -36,10 +37,10 @@ const Layout: FunctionComponent = ({ children }) => {
     <div>
       {/* TODO: <SEO title={frontmatter.title} /> */}
       <Nav />
-      <header className={styles.header}>
+      <header className={styles.block}>
         <h1>{`~${window.location.pathname}`}</h1>
       </header>
-      <main className={styles.main}>{children}</main>
+      <main className={clsx(styles.block, styles.main)}>{children}</main>
     </div>
   );
 };
