@@ -56,6 +56,15 @@ module.exports = {
       },
     },
     {
+      resolve: `gatsby-plugin-google-analytics`,
+      options: {
+        trackingId: 'UA-144998331-5',
+        anonymize: true,
+        respectDNT: true,
+        defer: false,
+      },
+    },
+    {
       resolve: `gatsby-plugin-postcss`,
       options: {
         postCssPlugins: [require(`postcss-preset-env`)({ stage: 1 })],
