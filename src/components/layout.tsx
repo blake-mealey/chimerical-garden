@@ -32,13 +32,17 @@ const Nav: FunctionComponent = () => {
   );
 };
 
-const Layout: FunctionComponent = ({ children }) => {
+interface LayoutProps {
+  location: Location;
+}
+
+const Layout: FunctionComponent<LayoutProps> = ({ children, location }) => {
   return (
     <div>
       {/* TODO: <SEO title={frontmatter.title} /> */}
       <Nav />
       <header className={styles.block}>
-        <h1>{`~${window.location.pathname}`}</h1>
+        <h1>{`~${location.pathname}`}</h1>
       </header>
       <main className={clsx(styles.block, styles.main)}>{children}</main>
     </div>
