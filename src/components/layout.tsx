@@ -14,9 +14,9 @@ import styles from './layout.module.css';
 import { Link } from 'gatsby';
 
 const Layout: FunctionComponent = ({ children }) => {
-  console.log(location);
   return (
     <div>
+      {/* TODO: <SEO title={frontmatter.title} /> */}
       <nav className={styles.nav}>
         <ul className={styles.navList}>
           <li>
@@ -30,10 +30,7 @@ const Layout: FunctionComponent = ({ children }) => {
       <header className={styles.header}>
         <h1>{`~${window.location.pathname}`}</h1>
       </header>
-      <main className={styles.main}>
-        {/* TODO: <SEO title={frontmatter.title} /> */}
-        {children}
-      </main>
+      <main className={styles.main}>{children}</main>
     </div>
   );
 };
