@@ -42,7 +42,7 @@ const Layout: FunctionComponent<LayoutProps> = ({ children, location }) => {
       {/* TODO: <SEO title={frontmatter.title} /> */}
       <Nav />
       <header className={styles.block}>
-        <h1>{`~${location.pathname}`}</h1>
+        <h1>{`~${location?.pathname}`}</h1>
       </header>
       <main className={clsx(styles.block, styles.main)}>{children}</main>
     </div>
