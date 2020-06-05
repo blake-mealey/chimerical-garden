@@ -1,5 +1,6 @@
 .block {
   padding: var(--theme-spacing-2) var(--theme-spacing-4);
+  max-width: 1000px;
 
   @media only screen and (max-width: 600px) {
     padding: var(--theme-spacing-2) var(--theme-spacing-1);
