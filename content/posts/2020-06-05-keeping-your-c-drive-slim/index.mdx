@@ -1,0 +1,46 @@
+---
+type: post
+title: Keeping your C drive slim
+date: 2020-06-05
+status: published
+---
+
+## Background
+
+I recently reset my PC, partly because my C drive was constantly full which was a constant headache
+that prevented me from updating Windows.
+
+These are some of the measures I took to keep my C drive slim this time around.
+
+## UWP Apps
+
+Windows offers a nice solution for this problem for its UWP apps (apps you install from the
+Microsoft Store). Open your Start menu and search for 'Storage settings.' Then under 'More storage
+settings,' click on 'Change where new content is saved.' You can now choose which drive various new
+content will be saved, including apps, documents, and photos. Changing the file type folders will
+move your user profile's Documents, Pictures, etc. folders to the drive you specify. I chose to
+change all of them to use my D drive.
+
+This will not affect existing apps, but fortunately there's a pretty easy way to move existing UWP
+apps to the same drive. Open your Start menu again and search for 'Apps & features.' Now select the
+'Filter by' dropdown and choose your C drive. Now scroll through the list of apps and click on any
+UWP apps. You can select the 'Move' option to move them to another drive. Unfortunately, Windows
+won't allow you to move some of the core Windows apps this way.
+
+## Chocolatey
+
+Chocolatey is a great way to install programs and has the added benefit of keeping all the programs
+it installs in the same place under its own install directory. Therefore, to keep those apps off
+your C drive, you need only install Chocolatey off your C drive. To do this, you need to tell
+Chocolatey where to install before installling it. Open your Start menu and search for 'Edit the
+system environment variables' and click the 'Environment Variables...' button. Now in the System
+variables section, add a `ChocolateyInstall` variable and set the value to be the directory you want
+Chocolatey to be installed in. For example, I chose to put mine in `D:\programs\Chocolatey`. Now
+you can install Chocolatey.
+
+## Scoop
+
+Scoop is another great package manager for Windows, which works in a similar fashion to Chocolatey.
+Before installing it, add another system environment variable called `SCOOP` and set its value to be
+the directory you want scoop installed in. I chose to put mine in `D:\programs\scoop`. Now you can
+install Scoop.
