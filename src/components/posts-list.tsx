@@ -24,8 +24,6 @@ const PostsLists: FunctionComponent<PostsListsProps> = ({ status }) => {
 
   const { nodes: posts } = data.allMdx;
 
-  console.log(posts);
-
   const filtered = posts.filter(
     (post: any) => post.frontmatter.status === status
   );
