@@ -18,6 +18,10 @@
   --theme-spacing-3: 32px;
   --theme-spacing-4: 64px;
 
+  --theme-roundness: 5px;
+
+  --theme-font-family: 'Fira Code', monospace;
+
   font-size: 15px;
 }
 
@@ -30,7 +34,7 @@ html {
   background-color: var(--theme-bg);
   color: var(--theme-fg);
 
-  font-family: 'Fira Code', monospace;
+  font-family: var(--theme-font-family);
   font-weight: 500;
   font-size: 1em;
 }
@@ -60,5 +64,13 @@ main {
 
   & p {
     margin: var(--theme-spacing-2) 0;
+  }
+
+  & code {
+    color: var(--theme-primary);
+    background-color: rgba(255, 255, 255, 0.1);
+    font-family: var(--theme-font-family);
+    border-radius: var(--theme-roundness);
+    padding: 0 var(--theme-spacing-1);
   }
 }
