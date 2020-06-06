@@ -7,7 +7,9 @@
 
 import React, { FunctionComponent } from 'react';
 import { Link } from 'gatsby';
+import { MDXProvider } from '@mdx-js/react';
 import clsx from 'clsx';
+import Shortcut from './shortcut';
 
 import './reset.css';
 import './theme.css';
@@ -15,6 +17,8 @@ import './theme.css';
 import styles from './layout.module.css';
 import SEO from './seo';
 import Badge from './badge';
+
+const shortcodes = { Shortcut };
 
 const Nav: FunctionComponent = () => {
   return (
@@ -67,7 +71,9 @@ const Layout: FunctionComponent<PageProps> = ({
         {unpublished && <Badge style="warning">{frontmatter?.status}</Badge>}
       </header>
 
-      <main className={clsx(styles.block, styles.main)}>{children}</main>
+      <main className={clsx(styles.block, styles.main)}>
+        <MDXProvider components={shortcodes}>{children}</MDXProvider>
+      </main>
     </div>
   );
 };

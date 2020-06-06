@@ -66,11 +66,20 @@ main {
     margin: var(--theme-spacing-2) 0;
   }
 
+  & code,
+  & kbd {
+    font-family: var(--theme-font-family);
+    border-radius: var(--theme-roundness);
+    padding: 0 calc(var(--theme-spacing-1) / 2);
+  }
+
   & code {
     color: var(--theme-primary);
     background-color: rgba(255, 255, 255, 0.1);
-    font-family: var(--theme-font-family);
-    border-radius: var(--theme-roundness);
-    padding: 0 var(--theme-spacing-1);
+  }
+
+  & kbd {
+    color: var(--theme-bg);
+    background-color: var(--theme-fg);
   }
 }
