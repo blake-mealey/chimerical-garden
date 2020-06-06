@@ -66,14 +66,14 @@ main {
     margin: var(--theme-spacing-2) 0;
   }
 
-  & code,
+  & :not(pre) > code,
   & kbd {
     font-family: var(--theme-font-family);
     border-radius: var(--theme-roundness);
     padding: 0 calc(var(--theme-spacing-1) / 2);
   }
 
-  & code {
+  & :not(pre) > code {
     color: var(--theme-primary);
     background-color: rgba(255, 255, 255, 0.1);
   }

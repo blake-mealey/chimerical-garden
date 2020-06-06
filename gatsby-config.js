@@ -46,6 +46,13 @@ module.exports = {
               maxWidth: 1000,
             },
           },
+          {
+            resolve: `gatsby-remark-vscode`,
+            options: {
+              theme: 'Night Owl',
+              extensions: ['night-owl'],
+            },
+          },
         ],
       },
     },
