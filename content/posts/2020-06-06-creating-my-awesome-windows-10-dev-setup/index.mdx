@@ -8,17 +8,64 @@ status: draft
 ## Background
 
 I recently got the chance to completely reset my Windows 10 machine, and took advantage of the
-opportunity to create a dev environment I would love.
+opportunity to create a dev environment I would love. These were my high-level goals:
 
-There were a few things I wanted to get sorted properly which I hadn't done before:
+- Make WSL my primary dev environment
+- Use VSCode as my primary editor
+- Have a beautiful terminal
 
-- A WSL distro which I could work in full-time
-- A beautiful terminal setup
-- A VSCode setup that worked in WSL
+## Implementation
 
-## WSL
+### WSL & VSCode
 
-Since WSL 2 had just came out with the promise of better performance, I knew I needed to make it my
-primary dev environment, so I started by setting it up. You can install it in a few easy steps
-following the [official docs](https://docs.microsoft.com/en-us/windows/wsl/install-win10). I chose
-to run the latest Ubuntu since that's the distro I have had the most experience with in the past.
+To achieve this, I started by installing WSL 2. I went with an Ubuntu distro because that's what
+I've had the most experience with in the past. You can find excellent instructions on installing WSL
+and/or upgrading it to WSL 2 in the [official
+docs](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
+
+Next I installed [VSCode](https://code.visualstudio.com/), and the [Remote Development extension
+pack](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.vscode-remote-extensionpack)
+which is where things start to get fun. With this extension pack installed, you can edit files in
+the WSL filesystem seamlessly with VSCode.
+
+#### Windows Terminal
+
+To get my beautiful terminal going, I installed [Windows
+Terminal](https://www.microsoft.com/en-us/p/windows-terminal) (WT), which is an awesome new terminal
+experience for Windows from Microsoft.
+
+Although I wanted WSL to be my primary dev environment, I still wanted working in Windows to be a
+nice experience as well, so I wanted to make sure my PowerShell terminal was great too. To get that
+going, I also installed the latest [PowerShell
+7](https://devblogs.microsoft.com/powershell/announcing-powershell-7-0/).
+
+Now it was time to setup my WT profiles. By default, WT creates a profile for WSL, PowerShell, cmd,
+and Azure Cloud Shell. I'm not interested in using CMD or Azure Cloud Shell, and I'm going to be
+using PowerShell 7 instead of PowerShell, so I disabled all but the WSL shell. To do this, simply
+add the `"hidden": true` property to the profiles in the WT settings file (click the dropdown in the
+header bar and then Settings or <Shortcut>Ctrl+,</Shortcut>).
+
+Now to create my PowerShell 7 profile, I added the following object to the profiles array:
+
+```json
+{
+  "guid": "{346d54ee-6282-41c7-846a-0a2fa38ff66b}",
+  "name": "PowerShell",
+  "commandline": "pwsh.exe",
+  "icon": "%SystemRoot%\\Installer\\{8B844F39-E6EE-486B-BE85-96A485AE2B96}\\PowerShellExe.ico"
+}
+```
+
+A few things to note:
+
+- To generate a GUID, you can use the [Online GUID
+  Generator](https://www.guidgenerator.com/online-guid-generator.aspx) website
+- Note that I am using the `pwsh.exe` command instead of `powershell.exe`
+- To find the icon path on your system, you can open your Start menu and search for PowerShell 7.
+  Right click on the app, and click "Open file location." In the file explorer that opens, right
+  click the shortcut and click "Properties." Navigate to the "Shortcut" tab, then click the "Change
+  Icon..." button and copy the current file path.
+
+Now I want my dev work to take place in a top-level directory to make it easy to reference and
+navigate to within a terminal, and I want the terminal to automatically open to that directory. For
+my Windows system I chose to make this `D:\code`, and for WSL I chose `~/code`.
