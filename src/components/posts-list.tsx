@@ -3,10 +3,16 @@ import { graphql, useStaticQuery, Link } from 'gatsby';
 import getPostPath from '../getPostPath';
 
 interface PostsListsProps {
-  status: string;
+  heading: string;
+  description: string;
+  postStatus: string;
 }
 
-const PostsLists: FunctionComponent<PostsListsProps> = ({ status }) => {
+const PostsLists: FunctionComponent<PostsListsProps> = ({
+  heading,
+  description,
+  postStatus,
+}) => {
   const data = useStaticQuery(graphql`
     query {
       allMdx(filter: { frontmatter: { type: { eq: "post" } } }) {
@@ -25,19 +31,27 @@ const PostsLists: FunctionComponent<PostsListsProps> = ({ status }) => {
   const { nodes: posts } = data.allMdx;
 
   const filtered = posts.filter(
-    (post: any) => post.frontmatter.status === status
+    (post: any) => post.frontmatter.status === postStatus
   );
 
+  if (filtered.length === 0) {
+    return null;
+  }
+
   return (
-    <ul>
-      {filtered.map((post: any) => (
-        <li key={post.id}>
-          <Link to={getPostPath(post.frontmatter.title)}>
-            {post.frontmatter.title} ({post.frontmatter.date})
-          </Link>
-        </li>
-      ))}
-    </ul>
+    <>
+      <h2>{heading}</h2>
+      <p>{description}</p>
+      <ul>
+        {filtered.map((post: any) => (
+          <li key={post.id}>
+            <Link to={getPostPath(post.frontmatter.title)}>
+              {post.frontmatter.title} ({post.frontmatter.date})
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </>
   );
 };
 
