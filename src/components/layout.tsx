@@ -76,7 +76,7 @@ const Layout: FunctionComponent<PageProps> = ({
       </main>
 
       {isPost && (
-        <section className={clsx(styles.block, styles.postFooter)}>
+        <footer className={clsx(styles.block, styles.postFooter)}>
           <ul>
             <li>
               Did I make a mistake? Submit a{' '}
@@ -91,7 +91,7 @@ const Layout: FunctionComponent<PageProps> = ({
               <a href="https://twitter.com/blakemdev">Twitter</a>!
             </li>
           </ul>
-        </section>
+        </footer>
       )}
     </div>
   );
