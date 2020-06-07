@@ -79,16 +79,16 @@ const Layout: FunctionComponent<PageProps> = ({
         <footer className={clsx(styles.block, styles.postFooter)}>
           <ul>
             <li>
+              Question or comment? Let me know on{' '}
+              <a href="https://twitter.com/blakemdev">Twitter</a>!
+            </li>
+
+            <li>
               Did I make a mistake? Submit a{' '}
               <a href="https://github.com/blake-mealey/chimerical-garden/tree/master/content/posts">
                 Pull Request
               </a>{' '}
               to make an edit!
-            </li>
-
-            <li>
-              Question or comment? Let me know on{' '}
-              <a href="https://twitter.com/blakemdev">Twitter</a>!
             </li>
           </ul>
         </footer>
