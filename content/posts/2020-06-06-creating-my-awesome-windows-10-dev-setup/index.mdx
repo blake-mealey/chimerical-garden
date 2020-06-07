@@ -14,9 +14,7 @@ opportunity to create a dev environment I would love. These were my high-level g
 - Use VSCode as my primary editor
 - Have a beautiful terminal
 
-## Implementation
-
-### WSL & VSCode
+## WSL & VSCode
 
 To achieve this, I started by installing WSL 2. I went with an Ubuntu distro because that's what
 I've had the most experience with in the past. You can find excellent instructions on installing WSL
@@ -28,7 +26,7 @@ pack](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.vscod
 which is where things start to get fun. With this extension pack installed, you can edit files in
 the WSL filesystem seamlessly with VSCode.
 
-#### Windows Terminal
+### Windows Terminal
 
 To get my beautiful terminal going, I installed [Windows
 Terminal](https://devblogs.microsoft.com/commandline/windows-terminal-1-0/) (WT), which is an
@@ -45,7 +43,7 @@ using PowerShell 7 instead of PowerShell, so I disabled all but the WSL shell. T
 add the `"hidden": true` property to the profiles in the WT settings file (click the dropdown in the
 header bar and then Settings or <Shortcut>Ctrl+,</Shortcut>).
 
-##### PowerShell WT Profile
+#### PowerShell WT Profile
 
 Now to create my PowerShell 7 profile, I added the following object to the profiles array:
 
@@ -69,7 +67,7 @@ A few things to note:
   3. In the file explorer that opens, right click the shortcut and click "Properties"
   4. On the "Shortcut" tab, click the "Change Icon..." button and copy the file path
 
-##### Ubuntu WT Profile
+#### Ubuntu WT Profile
 
 Since I want to make WSL my primary environment, I moved its profile object to the top of the list
 so that it will appear first in the new tab dropdown. Then I replaced the top-level `defaultProfile`
@@ -91,14 +89,14 @@ Owl](https://marketplace.visualstudio.com/items?itemName=sdras.night-owl) theme.
 to automatically generate a WT theme. You can read more about it in [this
 post](./generate-windows-terminal-scheme).
 
-#### Shell Profiles
+### Shell Profiles
 
 Next up I wanted to get my shell profiles started. We'll iterate on these more later on. Your shell
 profile is a script that gets run when the terminal starts which can be used to configure the
 current environment. For PowerShell, this will be a PowerShell script and for WSL it will be a bash
 script.
 
-##### PowerShell Profile
+#### PowerShell Profile
 
 Let's start with PowerShell again. You can run `echo $PROFILE` to see if a profile script already
 exists. For me it did, and it was located at
@@ -137,7 +135,7 @@ ever again, I can just run `profile` and can start editing it right away. I also
 alias which simply reloads the shell using the profile script. This lets me use my changes to the
 profile script without having to create a new terminal instance.
 
-##### Bash Profile
+#### Bash Profile
 
 Now for WSL, where we do something very similar. In bash, the profile is located at `~/.bashrc` and
 is written in bash. By default it contains a lot of stuff already, so I like to add my changes to
@@ -167,7 +165,7 @@ Then, I add the same `profile` and `reload` aliases to edit and reload the profi
 Finally, I added another alias which maps `explorer` to `explorer.exe` which makes it the same
 command for opening the Windows File Explorer in WSL as in PowerShell.
 
-#### Terminal Editor
+### Terminal Editor
 
 Let's revisit our terminal editor. I started with nano because it's a pretty intuitive and easy to
 use editor for terminals. I don't have a lot of terminal editor experience, so I'm not very handy
@@ -177,7 +175,7 @@ So, I did a bit of research to see if there were any editors that had more simil
 shortcuts and navigation to a modern GUI text editor, like VSCode. I found
 [micro](https://micro-editor.github.io/), which is available cross-platform, which is perfect!
 
-##### PowerShell Editor
+#### PowerShell Editor
 
 Let's install it. In PowerShell, it's easiest installed via [scoop](https://scoop.sh/) or
 [Chocolatey](https://chocolatey.org/). If you don't have either installed yet I'd highly recommend
@@ -195,7 +193,7 @@ Set-Alias -Name editor -Value micro
 
 TODO: Git?
 
-##### Ubuntu Editor
+#### Ubuntu Editor
 
 To install on Ubuntu, we can run the install script from the micro website:
 
@@ -213,7 +211,7 @@ EDITOR="micro"
 
 TODO: Git?
 
-##### Micro Theme
+#### Micro Theme
 
 One issue you might notice once you start editing in micro is that it's theme clashes with your WT
 theme. One option could be to port your WT theme to micro, but this is quite a bit of work. I found
@@ -223,7 +221,7 @@ quite well for me.
 To do this, you'll have to configure micro for PowerShell and WSL separately. To configure it, open
 micro, press <Shortcut>Ctrl+E</Shortcut> to open the command prompt, then enter the command `set colorscheme simple`.
 
-#### Terminal Prompt
+### Terminal Prompt
 
 Finally, to make our terminal really pretty, we need to customize the prompt. There's lots of
 options out there for this, but I wasn't a big fan of some of the more popular options like
@@ -238,7 +236,7 @@ delightfully simple prompt and some awesome customization (with the promise of e
 future releases). Since WSL and PowerShell both have access to the Windows filesystem, we can even
 store the Starship configuration in a central place and have both pull from it.
 
-##### PowerShell Starship
+#### PowerShell Starship
 
 To install Starship for PowerShell, we can again use scoop: `scoop install starship`. To load
 starship, we again need to edit our profile (now with our snazzy editor and single-command alias):
@@ -251,7 +249,7 @@ Invoke-Expression (&starship init powershell)
 
 Now we can run our `reload` alias and see the beautiful prompt right away.
 
-##### Bash Starship
+#### Bash Starship
 
 Installing Starship for Bash is just as easy. We can run the bash install script from their website:
 
@@ -269,7 +267,7 @@ eval "$(starship init bash)"
 
 Enter `reload` and we can see it in bash now too.
 
-##### Starship Configuration
+#### Starship Configuration
 
 To configure Starship the same on PowerShell and WSL, we'll start by creating the configuration file
 in the Windows filesystem for PowerShell, then create a symlink in the WSL filesystem. You could
@@ -317,7 +315,7 @@ mkdir ~/.config  # It's possible this already exists, especially if you've insta
 ln -s /mnt/c/Users/<username>/.config/starship.toml ~/.config/starship.toml
 ```
 
-### Conclusion
+## Conclusion
 
 It's getting easier and easier to create an amazingly beautiful and functional dev environment in
 Windows 10 these days. I hope this guide was useful to you and that you learned a few new things
