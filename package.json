@@ -9,6 +9,7 @@
     "@mdx-js/react": "^1.6.5",
     "@types/react": "^16.9.35",
     "@types/react-helmet": "^6.0.0",
+    "better-toml": "github:bungcip/better-toml",
     "clsx": "^1.1.1",
     "gatsby": "^2.22.15",
     "gatsby-image": "^2.4.5",
