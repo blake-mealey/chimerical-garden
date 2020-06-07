@@ -103,12 +103,8 @@ exists. For me it did, and it was located at
 `C:\Users\blake\Documents\PowerShell\Microsoft.PowerShell_profile.ps1`. If it doesn't exist for you,
 it's not a big deal. It seems that PowerShell looks in a [variety of
 places](https://devblogs.microsoft.com/scripting/understanding-the-six-powershell-profiles/) and you
-can just create a script in the appropriate place and it should work.
-
-To start with I don't want to have to keep remembering where my profile is to edit it, and I also
-want to be able to quickly edit it inside the terminal to reduce context switching. Some people
-might prefer to use VSCode or some other GUI editor and that's fine too. I added the following to my
-script:
+can just create a script in the appropriate place and it should work. Here's what I added to my
+profile script:
 
 ```ps1
 # C:\Users\blake\Documents\PowerShell\Microsoft.PowerShell_profile.ps1
@@ -124,9 +120,12 @@ Set-Alias -Name reload -Value reload_alias
 ```
 
 Let's break this down a bit. First of all, I am creating a couple aliases (`editor` and `edit`) for
-my in-terminal editor. If you wanted to use VSCode you could replace `nano` with `code`. My reason
-for doing this instead of directly typing using `nano` is so that I can change the editor at any
-time and not have to change my muscle memory to use the new command. It also means I can create more
+my in-terminal editor. I prefer to use a terminal editor instead of a GUI editor because it reduces
+context switching when working in the terminal, and is much faster to load the file to make a quick
+edit. That said, if you wanted to use VSCode, you could replace `nano` with `code`.
+
+The reason I create an alias for my editor command is so that I can change the editor at any time
+and not have to change my muscle memory to use the new command. It also means I can create more
 aliases that open the editor without having to change all of them if I change my editor.
 
 Next, I add the `profile` alias which opens the profile script in my editor (the `editor` alias is
@@ -137,9 +136,9 @@ profile script without having to create a new terminal instance.
 
 #### Bash Profile
 
-Now for WSL, where we do something very similar. In bash, the profile is located at `~/.bashrc` and
-is written in bash. By default it contains a lot of stuff already, so I like to add my changes to
-the bottom of the script. Here's what I added:
+Now let's do the same thing for bash. In bash, the profile is a bash script located at `~/.bashrc`.
+By default it contains a lot of stuff already, so I like to add my changes to the bottom of the
+script. Here's what I added:
 
 ```bash
 # ~/.bashrc
@@ -173,14 +172,14 @@ with Vim, and even nano can be a bit awkward to use.
 
 So, I did a bit of research to see if there were any editors that had more similar keyboard
 shortcuts and navigation to a modern GUI text editor, like VSCode. I found
-[micro](https://micro-editor.github.io/), which is available cross-platform, which is perfect!
+[micro](https://micro-editor.github.io/) which is available cross-platform, which is perfect!
 
 #### PowerShell Editor
 
 Let's install it. In PowerShell, it's easiest installed via [scoop](https://scoop.sh/) or
 [Chocolatey](https://chocolatey.org/). If you don't have either installed yet I'd highly recommend
 you do, as it makes installing programs in Windows a much easier experience. I'm going to use scoop
-for the purposes of this post. With scoop installed, simply run `scoop install micro`. Now you can
+for the purposes of this guide. With scoop installed, simply run `scoop install micro`. Now you can
 run `micro` to edit your files.
 
 Let's update our profile script to use it:
@@ -190,8 +189,6 @@ Let's update our profile script to use it:
 
 Set-Alias -Name editor -Value micro
 ```
-
-TODO: Git?
 
 #### Ubuntu Editor
 
@@ -209,8 +206,6 @@ Now we can update our bash profile to use it:
 EDITOR="micro"
 ```
 
-TODO: Git?
-
 #### Micro Theme
 
 One issue you might notice once you start editing in micro is that it's theme clashes with your WT
@@ -224,12 +219,11 @@ micro, press <Shortcut>Ctrl+E</Shortcut> to open the command prompt, then enter 
 ### Terminal Prompt
 
 Finally, to make our terminal really pretty, we need to customize the prompt. There's lots of
-options out there for this, but I wasn't a big fan of some of the more popular options like
-[ohmyzsh](https://github.com/ohmyzsh/ohmyzsh) because they tend to slow down my terminal, which
-seriously degrades the dev experience. ohmyzsh also isn't cross-platform. To set something similar
-up for PowerShell, you can use [oh-my-posh](https://github.com/JanDeDobbeleer/oh-my-posh) which in
-my experience is very slow, and is also a distinct option so parity with ohmyzsh requires separate
-configuration.
+options out there for this, but the most popular one seems to be
+[ohmyzsh](https://github.com/ohmyzsh/ohmyzsh) for Bash and
+[oh-my-posh](https://github.com/JanDeDobbeleer/oh-my-posh) for PowerShell. I'm not a huge fan of
+these because in my experience they slow down the terminal to a point which makes me frustrated to
+use them, and since they are separate soltions for each environment they must be configured separately.
 
 Enter [Starship](https://starship.rs), a "blazing-fast," cross-platform alternative with a
 delightfully simple prompt and some awesome customization (with the promise of even more coming in
@@ -266,6 +260,27 @@ eval "$(starship init bash)"
 ```
 
 Enter `reload` and we can see it in bash now too.
+
+#### Powerline Fonts
+
+One problem you may see at this point is that some icons in the prompt don't render correctly. To
+fix this, we need to configure a Powerline font for WT. The default WT font is `Cascadia Mono`.
+Cascadia is a font family which comes in the variants:
+
+- Cascadia Mono - Cascadia without programming font ligatures
+- Cascadia Code - Cascadia with programming font ligatures
+- Cascadia (Mono|Code) PL - One of the above with Powerline symbols
+
+By default, Cascadia Mono and Cascadia Code are installed, but you'll have to download and install
+the Powerline variants yourself from their [GitHub
+Releases](https://github.com/microsoft/cascadia-code/releases).
+
+You could use any other [Powerline font](https://github.com/powerline/fonts) you like, but I think
+Microsoft did a great job with this one.
+
+Once the font is installed, you can open your VSCode settings file and add the `"fontFace": "Cascadia Code PL"`
+property to the `profiles.defaults` object. (I also like the programming font ligatures so I am
+using the Code variant. If you don't like the ligatures, use the Mono variant instead).
 
 #### Starship Configuration
 
