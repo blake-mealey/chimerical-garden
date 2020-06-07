@@ -56,8 +56,8 @@ const Layout: FunctionComponent<PageProps> = ({
 }) => {
   const { frontmatter } = pageContext || {};
 
-  const unpublished =
-    frontmatter?.type === 'post' && frontmatter?.status !== 'published';
+  const isPost = frontmatter?.type === 'post';
+  const isDraft = isPost && frontmatter?.status !== 'published';
 
   return (
     <div>
@@ -68,12 +68,31 @@ const Layout: FunctionComponent<PageProps> = ({
       <header className={clsx(styles.block, styles.header)}>
         <h1>{`~${path}`}</h1>
 
-        {unpublished && <Badge style="warning">{frontmatter?.status}</Badge>}
+        {isDraft && <Badge style="warning">{frontmatter?.status}</Badge>}
       </header>
 
       <main className={clsx(styles.block, styles.main)}>
         <MDXProvider components={shortcodes}>{children}</MDXProvider>
       </main>
+
+      {isPost && (
+        <section className={clsx(styles.block, styles.postFooter)}>
+          <ul>
+            <li>
+              Did I make a mistake? Submit a{' '}
+              <a href="https://github.com/blake-mealey/chimerical-garden/tree/master/content/posts">
+                Pull Request
+              </a>{' '}
+              to make an edit!
+            </li>
+
+            <li>
+              Question or comment? Let me know on{' '}
+              <a href="https://twitter.com/blakemdev">Twitter</a>!
+            </li>
+          </ul>
+        </section>
+      )}
     </div>
   );
 };
