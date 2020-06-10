@@ -10,6 +10,7 @@ import { Link } from 'gatsby';
 import { MDXProvider } from '@mdx-js/react';
 import clsx from 'clsx';
 import Shortcut from './shortcut';
+import { heading } from './heading';
 
 import './reset.css';
 import './theme.css';
@@ -18,7 +19,15 @@ import styles from './layout.module.css';
 import SEO from './seo';
 import Badge from './badge';
 
-const shortcodes = { Shortcut };
+const shortcodes = {
+  Shortcut,
+  h1: heading('h1'),
+  h2: heading('h2'),
+  h3: heading('h3'),
+  h4: heading('h4'),
+  h5: heading('h5'),
+  h6: heading('h6'),
+};
 
 const Nav: FunctionComponent = () => {
   return (

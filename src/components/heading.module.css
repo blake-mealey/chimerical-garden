@@ -1,0 +1,28 @@
+.heading {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.permalink {
+  --offset-x: -20px;
+  --offset-y: -1px;
+
+  position: absolute;
+  font-size: 24px;
+  text-decoration: none;
+  opacity: 0;
+  padding-right: 10px;
+  transform: translate(
+    calc(-1 * var(--theme-spacing-1) + var(--offset-x)),
+    var(--offset-y)
+  );
+  transition: 0.1s ease-in-out;
+}
+
+.heading:hover .permalink {
+  &:not(:hover) {
+    opacity: 1;
+  }
+  transform: translate(var(--offset-x), var(--offset-y));
+}
