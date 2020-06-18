@@ -80,7 +80,7 @@ when WT launches.
 Similarly to PowerShell, I wanted the starting directory to be `~/code`. If you try setting that
 directly in the WT configuration, you'll find it doesn't work because WT doesn't know how to resolve
 it. You can use an absolute path to get there instead, and you need to use a Windows file path that
-WT can understand. You can access a WSL distro's file path from Windows using `\\wsl$\<distro>`, so, I added this property to the Ubuntu profile object: `"startingDirectory": "\\\\wsl$\\Ubuntu\\home\\blake\\code"` (where `Ubuntu` should be replaced with the name of your WSL
+WT can understand. You can access a WSL distro's file system from Windows using `\\wsl$\<distro>`, so, I added this property to the Ubuntu profile object: `"startingDirectory": "\\\\wsl$\\Ubuntu\\home\\blake\\code"` (where `Ubuntu` should be replaced with the name of your WSL
 distro and `blake` with your WSL username).
 
 #### WT Theme
