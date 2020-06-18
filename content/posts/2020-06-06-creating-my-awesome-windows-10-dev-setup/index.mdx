@@ -52,7 +52,8 @@ Now to create my PowerShell 7 profile, I added the following object to the profi
   "guid": "{346d54ee-6282-41c7-846a-0a2fa38ff66b}",
   "name": "PowerShell",
   "commandline": "pwsh.exe",
-  "icon": "%SystemRoot%\\Installer\\{8B844F39-E6EE-486B-BE85-96A485AE2B96}\\PowerShellExe.ico"
+  "icon": "%SystemRoot%\\Installer\\{8B844F39-E6EE-486B-BE85-96A485AE2B96}\\PowerShellExe.ico",
+  "startingDirectory": "D:\\code"
 }
 ```
 
@@ -60,15 +61,14 @@ A few things to note:
 
 - To generate a GUID, you can use the [Online GUID
   Generator](https://www.guidgenerator.com/online-guid-generator.aspx) website
-- Note that I am using the `pwsh.exe` command instead of `powershell.exe` to use PowerShell 7
+- I am using the `pwsh.exe` command instead of `powershell.exe` to use PowerShell 7
 - Follow these steps to find the icon path on your system:
   1. Open your Start menu and search for PowerShell 7
   2. Right click on the app and click "Open file location"
   3. In the file explorer that opens, right click the shortcut and click "Properties"
   4. On the "Shortcut" tab, click the "Change Icon..." button and copy the file path
-
-Finally, to make the PowerShell profile automatically open to the correct directory, I added
-`"startingDirectory": "D:\\code"` property to the profile object.
+- I like to set the starting directory to be where I keep all my projects, and ideally this is near
+  the root of a drive to keep file paths as short as possible
 
 #### Ubuntu WT Profile
 
@@ -77,21 +77,20 @@ so that it will appear first in the new tab dropdown. Then I replaced the top-le
 property with the WSL profile's `guid` property to make it the profile that is opened automatically
 when WT launches.
 
-Now I want my dev work to take place in a top-level directory to make it easy to reference and
-navigate to within a terminal, and I want the terminal to automatically open to that directory. For
-my Windows system I chose to make this `D:\code`, and for WSL I chose `~/code`.
-
-Once again, to make the Ubuntu profile automatically to the correct directory, I added
-`"startingDirectory": "\\\\wsl$\\Ubuntu\\home\\blake\\code"` (where `Ubuntu` should be replaced with
-the name of your WSL distro and `blake` with your WSL username).
+Similarly to PowerShell, I wanted the starting directory to be `~/code`. If you try setting that
+directly in the WT configuration, you'll find it doesn't work because WT doesn't know how to resolve
+it. You can use an absolute path to get there instead, and you need to use a Windows file path that
+WT can understand. You can access a WSL distro's file path from Windows using `\\wsl$\<distro>`, so, I added this property to the Ubuntu profile object: `"startingDirectory": "\\\\wsl$\\Ubuntu\\home\\blake\\code"` (where `Ubuntu` should be replaced with the name of your WSL
+distro and `blake` with your WSL username).
 
 #### WT Theme
 
 Finally, I wanted to get a new theme for my WT. I decided I would like to use the same colour scheme
 as I was using for VSCode at the time, which was the [Night
-Owl](https://marketplace.visualstudio.com/items?itemName=sdras.night-owl) theme. So, I created a
-[VSCode plugin](https://marketplace.visualstudio.com/items?itemName=blake-mealey.generate-wt-scheme)
-to automatically generate a WT theme. You can read more about it in [this
+Owl](https://marketplace.visualstudio.com/items?itemName=sdras.night-owl) theme. So (naturally), I
+created a [VSCode
+plugin](https://marketplace.visualstudio.com/items?itemName=blake-mealey.generate-wt-scheme) to
+automatically generate a WT theme. You can read more about it in [this
 post](./generate-windows-terminal-scheme).
 
 Here's what my terminal looks like with the Night Owl theme:
