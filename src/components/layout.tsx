@@ -93,7 +93,7 @@ const Layout: FunctionComponent<PageProps> = ({
             </li>
 
             <li>
-              Did I make a mistake? Submit a{' '}
+              Did I make a mistake or miss something? Submit a{' '}
               <a href="https://github.com/blake-mealey/chimerical-garden/tree/master/content/posts">
                 Pull Request
               </a>{' '}

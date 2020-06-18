@@ -47,6 +47,12 @@
     list-style: none;
   }
 
+  & ul {
+    & > li:not(:last-child) {
+      margin-bottom: var(--theme-spacing-2);
+    }
+  }
+
   @media only screen and (max-width: 600px) {
     border-radius: 0;
 
