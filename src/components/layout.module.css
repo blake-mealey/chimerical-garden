@@ -46,6 +46,14 @@
   & li {
     list-style: none;
   }
+
+  @media only screen and (max-width: 600px) {
+    border-radius: 0;
+
+    & ul {
+      padding: 0 var(--theme-spacing-2);
+    }
+  }
 }
 
 body {
