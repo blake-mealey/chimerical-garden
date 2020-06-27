@@ -48,7 +48,6 @@ const Nav: FunctionComponent = () => {
 };
 
 interface PageProps {
-  path: string;
   pageContext: {
     frontmatter: {
       type: 'post' | 'page';
@@ -56,12 +55,17 @@ interface PageProps {
       status?: 'draft' | 'published';
     };
   };
+  pageResources: {
+    page: {
+      path: string;
+    };
+  };
 }
 
 const Layout: FunctionComponent<PageProps> = ({
   children,
-  path,
   pageContext,
+  pageResources,
 }) => {
   const { frontmatter } = pageContext || {};
 
@@ -75,7 +79,7 @@ const Layout: FunctionComponent<PageProps> = ({
       <Nav />
 
       <header className={clsx(styles.block, styles.header)}>
-        <h1>{`~${path}`}</h1>
+        <h1>{`~${pageResources.page.path}`}</h1>
 
         {isDraft && <Badge style="warning">{frontmatter?.status}</Badge>}
       </header>
