@@ -54,20 +54,12 @@ interface PageProps {
       title: string;
       status?: 'draft' | 'published';
     };
-  };
-  pageResources: {
-    page: {
-      path: string;
-    };
+    slug: string;
   };
 }
 
-const Layout: FunctionComponent<PageProps> = ({
-  children,
-  pageContext,
-  pageResources,
-}) => {
-  const { frontmatter } = pageContext || {};
+const Layout: FunctionComponent<PageProps> = ({ children, pageContext }) => {
+  const { frontmatter, slug } = pageContext || {};
 
   const isPost = frontmatter?.type === 'post';
   const isDraft = isPost && frontmatter?.status !== 'published';
@@ -79,7 +71,7 @@ const Layout: FunctionComponent<PageProps> = ({
       <Nav />
 
       <header className={clsx(styles.block, styles.header)}>
-        <h1>{`~${pageResources.page.path}`}</h1>
+        <h1>{`~${slug}`}</h1>
 
         {isDraft && <Badge style="warning">{frontmatter?.status}</Badge>}
       </header>
