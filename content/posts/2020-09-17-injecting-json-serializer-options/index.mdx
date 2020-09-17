@@ -1,0 +1,84 @@
+---
+type: post
+title: Injecting JsonSerializerOptions in .NET Core 3
+date: 2020-09-17
+status: published
+---
+
+If you're using .NET Core 3, you're probably relying on it to serialize and deserialize
+your models to and from JSON. One of the great things about that is you can easily
+configure the serializer in one place and it will use those options wherever it
+serializes or deserializes your models.
+
+For example, you could configure it to automatically deserialize enum values for you:
+
+```cs
+// Startup.cs
+services.AddControllers().AddJsonOptions(opt =>
+{
+    opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
+```
+
+Now this is great and all, but what if you need to do some custom serializing outside of
+the .NET pipeline? Ideally, we could use the same serializer options to make sure we get
+consistent results througout our project.
+
+First of all, it's worth noting that the way the `System.Text.Json` library is designed,
+the serializer (`JsonSerializer`) is a static class that cannot be instanced. Therefore,
+we cannot access a serializer instance that is configured with our options. Instead, we
+need to have access to the options object itself, and pass it in to the serializer. (e.g.
+`JsonSerializer.Serialize(myJsonString, myJsonSerializerOptions)`)
+
+Fortunately, there's an easy (although not well documented) way of injecting the
+`JsonSerializerOptions`:
+
+```cs
+// MyController.cs
+private readonly JsonSerializerOptions _jsonSerializerOptions;
+
+public MyController(IOptions<JsonOptions> jsonOptions)
+{
+    _jsonSerializerOptions = jsonOptions.Value.JsonSerializerOptions;
+}
+
+public IActionResult MyAction()
+{
+    // ...
+    JsonSerializer.Serialize(someJson, _jsonSerializerOptions);
+    // ...
+}
+```
+
+This is great although a little unintuitive. We can clean it up a bit by adding a service
+provider for `JsonSerializerOptions` directly to our container:
+
+```cs
+// Startup.cs
+services.AddControllers().AddJsonOptions(opt =>
+{
+    // configure our JsonSerializerOptions
+});
+
+services.AddSingleton(provider =>
+    provider.GetService<IOptions<JsonOptions>>().Value.JsonSerializerOptions);
+```
+
+Now we can directly inject `JsonSerializerOptions`!
+
+```cs
+// MyController.cs
+private readonly JsonSerializerOptions _jsonSerializerOptions;
+
+public MyController(JsonSerializerOptions jsonSerializerOptions)
+{
+    _jsonSerializerOptions = jsonSerializerOptions;
+}
+
+public IActionResult MyAction()
+{
+    // ...
+    JsonSerializer.Serialize(someJson, _jsonSerializerOptions);
+    // ...
+}
+```
