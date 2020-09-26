@@ -15,7 +15,10 @@ const PostsLists: FunctionComponent<PostsListsProps> = ({
 }) => {
   const data = useStaticQuery(graphql`
     query {
-      allMdx(filter: { frontmatter: { type: { eq: "post" } } }) {
+      allMdx(
+        sort: { order: DESC, fields: frontmatter___date }
+        filter: { frontmatter: { type: { eq: "post" } } }
+      ) {
         nodes {
           id
           frontmatter {
