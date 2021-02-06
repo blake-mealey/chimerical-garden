@@ -53,16 +53,26 @@ interface PageProps {
       type: 'post' | 'page';
       title: string;
       status?: 'draft' | 'published';
+      date: string;
     };
     slug: string;
   };
 }
+
+const dateFormatter = new Intl.DateTimeFormat(undefined, {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+  timeZone: 'UTC',
+});
 
 const Layout: FunctionComponent<PageProps> = ({ children, pageContext }) => {
   const { frontmatter, slug } = pageContext || {};
 
   const isPost = frontmatter?.type === 'post';
   const isDraft = isPost && frontmatter?.status !== 'published';
+
+  const date = frontmatter?.date ? new Date(frontmatter.date) : undefined;
 
   return (
     <div>
@@ -77,6 +87,12 @@ const Layout: FunctionComponent<PageProps> = ({ children, pageContext }) => {
       </header>
 
       <main className={clsx(styles.block, styles.main)}>
+        {date && (
+          <time dateTime={date.toISOString()}>
+            {dateFormatter.format(date)}
+          </time>
+        )}
+
         <MDXProvider components={shortcodes}>{children}</MDXProvider>
       </main>
 
