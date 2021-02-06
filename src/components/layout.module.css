@@ -35,6 +35,10 @@
 
 .main {
   padding-top: 0;
+
+  & time {
+    opacity: 0.7;
+  }
 }
 
 .post-footer {
