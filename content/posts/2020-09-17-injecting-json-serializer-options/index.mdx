@@ -22,15 +22,15 @@ services.AddControllers().AddJsonOptions(opt =>
 
 Now this is great and all, but what if you need to do some custom serializing outside of
 the .NET pipeline? Ideally, we could use the same serializer options to make sure we get
-consistent results througout our project.
+consistent results throughout our project.
 
 First of all, it's worth noting that the way the `System.Text.Json` library is designed,
 the serializer (`JsonSerializer`) is a static class that cannot be instanced. Therefore,
 we cannot access a serializer instance that is configured with our options. Instead, we
-need to have access to the options object itself, and pass it in to the serializer. (e.g.
-`JsonSerializer.Serialize(myJsonString, myJsonSerializerOptions)`)
+need to have access to the options object itself, and pass it in to the serializer (e.g.
+`JsonSerializer.Serialize(myJsonString, myJsonSerializerOptions)`).
 
-Fortunately, there's an easy (although not well documented) way of injecting the
+Fortunately, there's an easy—though not well documented—way of injecting the
 `JsonSerializerOptions`:
 
 ```cs
