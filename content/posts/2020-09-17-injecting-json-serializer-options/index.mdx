@@ -30,7 +30,7 @@ we cannot access a serializer instance that is configured with our options. Inst
 need to have access to the options object itself, and pass it in to the serializer (e.g.
 `JsonSerializer.Serialize(myJsonString, myJsonSerializerOptions)`).
 
-Fortunately, there's an easy—though not well documented—way of injecting the
+Fortunately, there's an easy — though not well documented — way of injecting the
 `JsonSerializerOptions`:
 
 ```cs
