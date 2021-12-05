@@ -1,9 +1,0 @@
-.badge {
-  border-radius: 100px;
-  padding: calc(var(--theme-spacing-1) / 2) var(--theme-spacing-1);
-}
-
-.warning {
-  background-color: var(--theme-warn-bg);
-  color: var(--theme-warn-fg);
-}
