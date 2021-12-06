@@ -3,7 +3,7 @@ import React, { FunctionComponent } from 'react';
 import styles from './heading.module.css';
 
 interface HeadingProps {
-  tag: string;
+  tag: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
 }
 
 const Heading: FunctionComponent<HeadingProps> = ({ children, tag: Tag }) => {
@@ -20,7 +20,9 @@ const Heading: FunctionComponent<HeadingProps> = ({ children, tag: Tag }) => {
   );
 };
 
-const createHeadingComponent = (tag: string) => {
+const createHeadingComponent = (
+  tag: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
+) => {
   // eslint-disable-next-line react/display-name
   return ({ children }: { children: React.ReactNode }) => {
     return <Heading tag={tag}>{children}</Heading>;
