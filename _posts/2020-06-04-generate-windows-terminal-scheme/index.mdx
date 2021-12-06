@@ -1,0 +1,36 @@
+---
+title: Generate Windows Terminal Scheme
+date: 2020-06-05
+status: published
+---
+
+## Background
+
+[Generate Windows Terminal
+Scheme](https://marketplace.visualstudio.com/items?itemName=blake-mealey.generate-wt-scheme) is a
+VSCode extension for, well, generating [Windows Terminal colour
+schemes](https://docs.microsoft.com/en-us/windows/terminal/customize-settings/color-schemes). What
+does it generate them from? The currently active VSCode colour theme!
+
+I built this because I wanted my VSCode and Windows Terminal to match, and I must say I am super
+happy with the results!
+
+![Results](/images/generate-windows-terminal-scheme/results.png)
+
+_<center>Using the [Night Owl](https://marketplace.visualstudio.com/items?itemName=sdras.night-owl) theme</center>_
+
+In fact, I was so happy with it, I even used colours from Night Owl for this website, so now my
+editor, terminal, and website are all matchy-matchy.
+
+## Usage
+
+To use it, first install it in VSCode. Then, open your command pallette with <Shortcut>Ctrl+Shift+P</Shortcut>,
+type 'Generate Windows Terminal Scheme' and hit <Shortcut>Enter</Shortcut>. At this time, there is
+no extension API to get the name of the colour theme, so you will be prompted to enter it. When you
+enter the name, a new editor will open containing a JSON object.
+
+You can now copy that JSON object, and paste it into your VSCode `schemes` array. To do that, open
+VSCode, click on the dropdown in the header bar and click Settings (alternatively, <Shortcut>Ctrl+,</Shortcut>).
+Your settings file will open in your default JSON editor. Now find the `schemes` array, and paste
+the JSON into it. To use the scheme, add a `"colorScheme": "<your-title>"` property to either the
+`profiles.defaults` object, or any of the profile objects in the `profiles.list` array.

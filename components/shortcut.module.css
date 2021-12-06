@@ -1,0 +1,12 @@
+.shortcut {
+  white-space: nowrap;
+
+  --spacing: 4px;
+}
+
+.shortcut > kbd:not(:first-child) {
+  margin-left: var(--spacing);
+}
+.shortcut > kbd:not(:last-child) {
+  margin-right: var(--spacing);
+}
