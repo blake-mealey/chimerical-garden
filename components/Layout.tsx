@@ -20,13 +20,21 @@ const Layout: NextPage<LayoutProps> = ({ children, slug, meta }) => {
   const isPost = meta.type === 'post';
   const isDraft = isPost && meta.status !== 'published';
 
+  const title = `${meta.title} | Chimerical`;
+  const description = "Blake Mealey's digital garden.";
+
   return (
     <div className={styles.container}>
       <Head>
-        {/* TODO: SEO */}
-        <title>{meta.title}</title>
-        <meta name="description" content="Blake Mealey's personal website." />
-        {/* <link rel="icon" href="/favicon.ico" /> */}
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <meta property="og:title" content={meta.title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:creator" content="@blakemdev" />
+        <meta name="twitter:title" content={meta.title} />
+        <meta name="twitter:description" content="description" />
       </Head>
 
       <nav className={clsx(styles.block, styles.nav)}>
@@ -47,7 +55,6 @@ const Layout: NextPage<LayoutProps> = ({ children, slug, meta }) => {
         <h1>{'~' + slug}</h1>
 
         {isDraft && <Badge variant="warning">{meta.status}</Badge>}
-        {/* TODO: drafts */}
       </header>
 
       <main className={clsx(styles.block, styles.main)}>
