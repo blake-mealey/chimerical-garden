@@ -73,7 +73,7 @@ const Layout: NextPage<LayoutProps> = ({ children, slug, meta }) => {
 
             <li>
               Did I make a mistake or miss something? Submit a{' '}
-              <a href="https://github.com/blake-mealey/chimerical-garden/tree/master/content/posts">
+              <a href="https://github.com/blake-mealey/chimerical-garden/tree/master/_posts">
                 Pull Request
               </a>{' '}
               to make an edit!
