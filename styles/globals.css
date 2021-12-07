@@ -181,6 +181,11 @@ main img:hover {
   box-shadow: rgba(255, 255, 255, 0.1) 0 0 5px !important;
 }
 
+main pre > code {
+  /* We have to override the font family added by the code highlighter */
+  font-family: var(--theme-font-family) !important;
+}
+
 main kbd {
   color: var(--theme-bg);
   background-color: var(--theme-fg);
