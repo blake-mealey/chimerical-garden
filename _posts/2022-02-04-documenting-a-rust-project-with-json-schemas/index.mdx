@@ -1,0 +1,124 @@
+---
+title: Documenting a Rust Project with JSON Schemas
+date: 2022-02-04
+status: draft
+---
+
+My side project [Mantle](https://mantle-docs.vercel.app) is an infra-as-code tool built with Rust
+which is configured with YAML files. The key thing my docs need to communicate past the getting
+started phase to my users is the format for these config files.
+
+The [first
+iteration](https://github.com/blake-mealey/mantle-docs/blob/80b64fdf06485f1efc78395ba5664a08c60699bd/docs/configuration.md)
+of my configuration docs were written by hand in a markdown file in the docs site repo. They weren't
+terrible, but I had a few issues with them.
+
+## Choose the format for the job
+
+When I started writing these docs, I organized them by complex types. At the top of the file, I
+listed each of the top-level properties in the config file along with their type. If the type was
+complex, I created a new heading in the document and linked to it.
+
+This worked, but it's a format that's better suited to documenting the classes in a library than the
+properties in a config file.
+
+I once watched someone read the document for the first time, and it was unclear to them how the
+information they were seeing related to the config file itself, even with the smattering of example
+blocks I included.
+
+## Manual changes are tedious
+
+Because I was writing the document by hand, if I ever wanted to make a style change to the page, I
+had to make it manually for every object and property. This was not ideal.
+
+## Separate from code, separate from tooling
+
+Documentation in a standalone markdown file is fine for humans to read, but not so good for
+computers. If I ever wanted to surface this documentation in other mediums (e.g. inline in VSCode or
+with an interactive CLI), I would need to rethink things.
+
+## Enter, JSON Schemas
+
+JSON Schemas are a format for specifying what makes JSON documents valid. Schemas themselves are
+JSON documents which makes them easy to read and write. Since YAML is basically just JSON with
+cleaner syntax, you can use a JSON schema to validate YAMl files too!
+
+Now I _could_ have replaced my manually written markdown file with a manually written JSON schema
+file, but this would have been very unpleasant. I still want to format my docs with markdown, and
+considering JSON has no multiline strings that would have been very painful. It also would have
+meant manually documenting all of my type information.
+
+Fortunately, many languages have tooling for generating JSON schemas from their type systems, and
+Rust is no exception. I discovered [schemars](https://graham.cool/schemars/) which can be easily
+used to generate JSON schemas from my Rust structs and enums just by adding a
+`#[derive(JsonSchema)]` attribute to them. And the great thing is, schemars integrates with serde so
+that it understands serde attributes and produces a schema which matches serde's validation!
+
+I did experience a couple of challenges using schemars, however. schemars uses Rust's doc comments
+to capture the JSON schema `description` property, but it does some mangling to the text first which
+means that it breaks markdown formatting. To get around this I am working off of a fork of the
+library, but I hope to merge in an option to address this properly in the future.
+
+Another challenge I ran into was wanting to add extension properties to my JSON schema. schemars
+does support this through its Visitor API, but there is currently no attribute to add an extension
+property to a Rust type directly. My solution was to add a special line at the top of my
+descriptions when I wanted to add a custom property and then I parsed these out in a Visitor. I also
+hope to add this as an attribute to the core library when I get a chance.
+
+## Generating some docs
+
+Now I just needed to generate some docs. Coming back to the format question from earlier, I decided
+to try and emulate some examples of other projects documenting large config files like [GitHub
+Actions](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions),
+[GitLab CI](https://docs.gitlab.com/ee/ci/yaml/index.html), and
+[Rollup.js](https://rollupjs.org/guide/en/#big-list-of-options). Basically, instead of organizing by
+classes, these docs are just a nested list of all the properties in the schema. Each property
+includes the full path name (e.g. `jobs.<job-id>.name`). This makes it very clear to the reader how
+the documentation can be applied to the config file itself!
+
+I took a look at some existing JSON schema docs generators but none of them really looked the way I
+wanted them to. Most of them used a similar organization to what I started with, so I decided to
+roll my own.
+
+I wrote a TS script to load a JSON schema and flatten the properties into a big list, along with
+some additional metadata like the full property name, and whether it is a required property.
+
+Then, I wrote a simple Handlebars template which iterated over the properties and printed their docs
+in a consistent format.
+
+## Autocomplete and in-editor docs
+
+To take advantage of my schemas even more, I tried loading it into VSCode. With the YAML extension
+installed, it was as easy as adding `"yaml.schemas": { "mantle.yml": "schema.json" }` to add
+autocomplete and in-editor docs to my config files.
+
+But, they looked... bad. The formatting was all off.
+
+It turns out VSCode interprets the `description` property of schemas as plaintext, and if you want
+it to look correct, you need to use a `markdownDescription` property. I was also using some
+non-standard markdown syntax which my docs platform ([Docusaurus](https://docusaurus.io)) supports
+(like admonitions and code block titles).
+
+To resolve this, I wrote another TS script to transform a schema into something VSCode can properly
+interpret. I used remark to parse the markdown into an AST, then modified the AST.
+
+My biggest challenge here was related to Node.js's ESM support. Recently, the remark ecosystem has
+"upgraded" to ESM-only, but currently TS has very bad interop with these modules. In the end, I
+decided to just use older versions of these packages which use CommonJS modules.
+
+## Tying it all together
+
+Once I was happy with the schema I was generating from my types, I updated my `deploy` GitHub Action
+to generate the schema and upload it with my GitHub release assets. Now whenever I bump my version,
+a GitHub Action builds my project, creates a Release, and uploads the binaries and schema.
+
+Then I updated my docs generation script to start by downloading all schemas from past releases. I
+use the latest one to generate my docs page, then I run all of them through my transformer to make
+them VSCode-ready and save them to my site's static directory. Now when I deploy the site, these
+schemas are hosted with it (e.g. my
+[v0.11.0](https://mantle-docs.vercel.app/schemas/v0.11.0/schema.json) schema).
+
+My users can now just add `"yaml.schemas": { "mantle.yml": "https://mantle-docs.vercel.app/schemas/v0.11.0/schema.json" }`
+to add autocomplete to their editor!
+
+TODO: Conclusion
