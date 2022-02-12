@@ -56,10 +56,13 @@ const Layout: NextPage<LayoutProps> = ({ children, slug, meta }) => {
             <Link href="/home">home</Link>
           </li>
           <li>
-            <Link href="/work">work</Link>
+            <Link href="/projects">projects</Link>
           </li>
           <li>
             <Link href="/posts">posts</Link>
+          </li>
+          <li>
+            <Link href="/fun">fun</Link>
           </li>
         </ul>
       </nav>
