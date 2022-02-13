@@ -36,7 +36,7 @@ const Content = ({ state }: ContentProps) => {
     return (
       <div>
         <div className={styles.label}>Time played</div>
-        <div>{numberFormatter.format(state.data.minutes / 60)}</div>
+        <div>{numberFormatter.format(Math.floor(state.data.minutes / 60))}</div>
       </div>
     );
   }
