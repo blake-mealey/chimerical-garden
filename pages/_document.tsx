@@ -4,6 +4,7 @@ export default function Document() {
   return (
     <Html>
       <Head>
+        <link rel="icon" type="image/svg+xml" href="favicon.svg" />
         <link
           rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&display=swap"
