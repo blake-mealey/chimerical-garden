@@ -49,7 +49,7 @@ export const getStaticProps: GetStaticProps<PageProps> = async ({ params }) => {
 
 export const getStaticPaths: GetStaticPaths = async () => {
   return {
-    paths: ['/home', '/work'],
+    paths: ['/home', '/projects', '/fun'],
     fallback: false,
   };
 };

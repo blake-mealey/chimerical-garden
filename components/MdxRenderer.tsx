@@ -4,6 +4,7 @@ import createHeadingComponent from './createHeadingComponent';
 import Shortcut from './Shortcut';
 import Image from 'next/image';
 import SubstantialPresenceTest from './SubstantialPresenceTest';
+import RocketLeague from './RocketLeague';
 
 const shortcodes = {
   Shortcut,
@@ -21,6 +22,7 @@ const shortcodes = {
   h5: createHeadingComponent('h5'),
   h6: createHeadingComponent('h6'),
   SubstantialPresenceTest, // TODO: Should be able to import from just the article that uses this
+  RocketLeague,
 };
 
 const MdxRenderer = function ({ source }: { source: any }) {
