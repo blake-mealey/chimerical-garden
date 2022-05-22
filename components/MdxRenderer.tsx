@@ -21,7 +21,9 @@ const shortcodes = {
   h4: createHeadingComponent('h4'),
   h5: createHeadingComponent('h5'),
   h6: createHeadingComponent('h6'),
-  SubstantialPresenceTest, // TODO: Should be able to import from just the article that uses this
+
+  // TODO: Should be able to import these from just the articles that uses them
+  SubstantialPresenceTest,
   RocketLeague,
 };
 

@@ -1,244 +1,77 @@
-import { Fragment, useEffect, useReducer, useState } from 'react';
+import { useAtom, useAtomValue } from 'jotai';
+import { atomWithStorage } from 'jotai/utils';
+import { FC } from 'react';
+import { addDays, differenceInDays } from 'date-fns';
 
-const NUM_YEARS_TO_INCLUDE = 10;
 const CURRENT_YEAR = new Date().getFullYear();
 const TOTAL_REQUIREMENT = 183;
-const YEAR_REQUIREMENTS = [
-  {
-    yearOffset: 0,
-    minimum: 31,
-    multiplier: 1,
-  },
-  {
-    yearOffset: -1,
-    multiplier: 1 / 3,
-  },
-  {
-    yearOffset: -2,
-    multiplier: 1 / 6,
-  },
-];
+const CURRENT_YEAR_REQUIREMENT = 31;
+const YEAR_MULTIPLIERS = [1, 1 / 3, 1 / 6];
+const NUM_YEARS_TO_INCLUDE = YEAR_MULTIPLIERS.length * 4;
 
-function dateToValue(date: Date) {
-  return date.toISOString().split('T')[0];
+interface Range {
+  start: number;
+  end: number;
 }
 
-function addDays(date: Date, days: number) {
-  const newDate = new Date(date);
-  newDate.setDate(newDate.getDate() + days);
-  return newDate;
-}
-
-type DayCounterRangeProps = {
-  year: number;
-  onChange?: (range: DayCounterRange) => void;
-};
-
-const DayCounterRange = function ({ year, onChange }: DayCounterRangeProps) {
-  const min = `${year}-01-01`;
-  const max = year !== CURRENT_YEAR ? `${year}-12-31` : dateToValue(new Date());
-
-  const [start, setStart] = useState(new Date(min));
-  const [end, setEnd] = useState(new Date(max));
-
-  function computeChange() {
-    if (onChange) {
-      const timeDiff = end.getTime() - start.getTime();
-      const daysDiff = timeDiff / (1000 * 3600 * 24);
-      onChange({ count: daysDiff, start, end }); // TODO: Should we include the last day?
-    }
-  }
-
-  useEffect(() => {
-    computeChange();
-  }, [start, end]);
-
-  function handleChange(setter: (date: Date) => void, value: Date) {
-    setter(value);
-  }
-
-  return (
-    <span>
-      <label>
-        from{' '}
-        <input
-          type="date"
-          min={min}
-          max={dateToValue(addDays(end, -1))}
-          value={dateToValue(start)}
-          onChange={(e) =>
-            handleChange(setStart, new Date(e.target.valueAsDate!))
-          }
-        />
-      </label>{' '}
-      <label>
-        till{' '}
-        <input
-          type="date"
-          min={dateToValue(addDays(start, 1))}
-          max={max}
-          value={dateToValue(end)}
-          onChange={(e) =>
-            handleChange(setEnd, new Date(e.target.valueAsDate!))
-          }
-        />
-      </label>
-    </span>
-  );
-};
-
-type DayCounterRange = {
-  count: number;
-  start: Date | null;
-  end: Date | null;
-};
-
-type DayCounterState = {
+interface YearDetails {
   present: boolean;
-  ranges: DayCounterRange[];
-  count: number;
-};
-
-type DayCounterAction =
-  | { type: 'togglePresent' }
-  | { type: 'addRange' }
-  | { type: 'removeRange'; range: DayCounterRange }
-  | { type: 'updateRange'; range: DayCounterRange; updates: DayCounterRange };
-
-function dayCounterReducer(
-  state: DayCounterState,
-  action: DayCounterAction
-): DayCounterState {
-  function primaryReducer() {
-    if (action.type === 'togglePresent') {
-      return { ...state, present: !state.present };
-    } else if (action.type === 'addRange') {
-      return {
-        ...state,
-        ranges: [...state.ranges, { count: 0, start: null, end: null }],
-      };
-    } else if (action.type === 'removeRange') {
-      return {
-        ...state,
-        ranges: state.ranges.filter((x) => x !== action.range),
-      };
-    } else if (action.type === 'updateRange') {
-      return {
-        ...state,
-        ranges: state.ranges.map((x) =>
-          x !== action.range ? x : { ...x, ...action.updates }
-        ),
-      };
-    }
-    throw new Error();
-  }
-
-  const nextState = primaryReducer();
-  return {
-    ...nextState,
-    count: !nextState.present
-      ? 0
-      : nextState.ranges.reduce((count, range) => count + range.count, 0),
-  };
+  ranges: Range[];
 }
 
-type DayCounterProps = {
-  year: number;
-  onChange?: (count: number) => void;
-};
+const yearAtom = atomWithStorage(
+  'substantialPresenceTest:selectedYear',
+  CURRENT_YEAR
+);
+const yearsDetailsAtom = atomWithStorage<Record<number, YearDetails>>(
+  'substantialPresenceTest:yearsDetails',
+  {}
+);
 
-const DayCounter = function ({ year, onChange }: DayCounterProps) {
-  const [state, dispatch] = useReducer(dayCounterReducer, {
-    present: false,
-    ranges: [{ count: 0, start: null, end: null }],
-    count: 0,
-  });
-
-  useEffect(() => {
-    if (onChange) {
-      onChange(state.count);
-    }
-  }, [state.count]);
-
-  return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'flex-start',
-        gap: 'var(--theme-spacing-1)',
-      }}
-    >
-      <label>
-        I was present{' '}
-        <input
-          type="checkbox"
-          checked={state.present}
-          onChange={() => dispatch({ type: 'togglePresent' })}
-        />
-      </label>
-
-      {state.present ? (
-        <>
-          {state.ranges.map((range, i) => (
-            <div key={i}>
-              <span>
-                {i !== 0 ? <span>and </span> : null}
-                <DayCounterRange
-                  year={year}
-                  onChange={(updates) =>
-                    dispatch({ type: 'updateRange', range, updates })
-                  }
-                />
-              </span>{' '}
-              <button
-                disabled={state.ranges.length === 1}
-                onClick={() => dispatch({ type: 'removeRange', range })}
-                style={{
-                  borderRadius: '28px',
-                  width: '28px',
-                  height: '28px',
-                  transition: 'ease-in-out 0.2s',
-                }}
-              >
-                x
-              </button>
-            </div>
-          ))}
-          <button
-            onClick={() => dispatch({ type: 'addRange' })}
-            style={{ borderRadius: '28px' }}
-          >
-            + add range
-          </button>
-        </>
-      ) : null}
-    </div>
+function getAllValidDays(
+  year: number,
+  yearsDetails: Record<number, YearDetails>
+) {
+  return YEAR_MULTIPLIERS.map((multiplier, i) => {
+    const offsetYear = year - i;
+    return getValidDays(multiplier, yearsDetails[offsetYear]);
+  }).reduce(
+    (acc, curr) => ({
+      totalDays: acc.totalDays + curr.validDays,
+      validDays: acc.validDays + curr.validDays,
+      lastDay: Math.max(curr.lastDay ?? 0, acc.lastDay ?? 0),
+    }),
+    { totalDays: 0, validDays: 0, lastDay: 0 }
   );
-};
+}
 
-const SubstantialPresenceTest = function () {
-  function getDefaultDayCounts(year: number) {
-    const dayCounts: Record<number, number> = {};
-    YEAR_REQUIREMENTS.forEach((req) => (dayCounts[year + req.yearOffset] = 0));
-    return dayCounts;
-  }
+function getValidDays(multiplier: number, details?: YearDetails) {
+  const totalDays = details?.present
+    ? details.ranges.reduce(
+        (total, range) => total + differenceInDays(range.end, range.start) + 1,
+        0
+      )
+    : 0;
+  const validDays = Math.floor(totalDays * multiplier);
+  return { totalDays, validDays, lastDay: details?.ranges.at(-1)?.end };
+}
 
-  const [year, setYear] = useState(CURRENT_YEAR);
-  const [dayCounts, setDayCounts] = useState<Record<number, number>>(
-    getDefaultDayCounts(CURRENT_YEAR)
+const SubstantialPresenceTest = () => {
+  const year = useAtomValue(yearAtom);
+  const yearsDetails = useAtomValue(yearsDetailsAtom);
+
+  const { validDays, lastDay } = getAllValidDays(year, yearsDetails);
+  const { validDays: currentYearValidDays } = getValidDays(
+    YEAR_MULTIPLIERS[0],
+    yearsDetails[year]
   );
 
-  const total = YEAR_REQUIREMENTS.reduce(
-    (sum, req) =>
-      sum + Math.floor(dayCounts[year + req.yearOffset] * req.multiplier),
-    0
-  );
-
-  const currentDate = new Date();
-  const passingDate = new Date(
-    currentDate.setDate(currentDate.getDate() + (TOTAL_REQUIREMENT - total))
-  );
+  const dayOfPassing =
+    validDays >= TOTAL_REQUIREMENT
+      ? currentYearValidDays > CURRENT_YEAR_REQUIREMENT
+        ? new Date(lastDay!)
+        : addDays(lastDay!, CURRENT_YEAR_REQUIREMENT - currentYearValidDays)
+      : addDays(lastDay!, TOTAL_REQUIREMENT - validDays);
 
   return (
     <section
@@ -249,65 +82,313 @@ const SubstantialPresenceTest = function () {
       }}
     >
       <h3 style={{ marginTop: '0' }}>Substantial Presence Test Calculator</h3>
+      <YearPicker />
 
-      <label>
-        Which year would you like to test for?{' '}
-        <select
-          value={year}
-          onChange={(e) => {
-            setYear(+e.target.value);
-            setDayCounts(getDefaultDayCounts(+e.target.value));
-          }}
-        >
-          {new Array(NUM_YEARS_TO_INCLUDE).fill(0).map((_, i) => (
-            <option key={i} value={CURRENT_YEAR - i}>
-              {CURRENT_YEAR - i}
-            </option>
-          ))}
-        </select>
-      </label>
-
-      <div
+      <table
         style={{
-          display: 'grid',
-          gridTemplateColumns: 'min-content auto auto',
-          gap: 'var(--theme-spacing-3)',
-          marginTop: 'var(--theme-spacing-2)',
+          width: '100%',
+          borderSpacing: '5px',
+          margin: '20px 0',
+          padding: '5px',
         }}
       >
-        {YEAR_REQUIREMENTS.map((req) => (
-          <Fragment key={year + req.yearOffset}>
-            <span style={{ opacity: 0.8 }}>{year + req.yearOffset}</span>
-            <DayCounter
-              year={year + req.yearOffset}
-              onChange={(count) => {
-                setDayCounts({
-                  ...dayCounts,
-                  [year + req.yearOffset]: Math.floor(count),
-                });
-              }}
-            />
-            <span>
-              {dayCounts[year + req.yearOffset]} x 1/{1 / req.multiplier} ={' '}
-              {Math.floor(dayCounts[year + req.yearOffset] * req.multiplier)}
-            </span>
-          </Fragment>
-        ))}
+        <tbody>
+          <YearCounterRows />
 
-        <span style={{ gridColumnStart: '2' }}>Total eligible days:</span>
-        <span>
-          {total} / {TOTAL_REQUIREMENT}
-        </span>
+          <tr>
+            <td></td>
+            <td>Total eligible days for the current year</td>
+            <td style={{ textAlign: 'right', whiteSpace: 'nowrap' }}>
+              {currentYearValidDays} / {CURRENT_YEAR_REQUIREMENT}
+            </td>
+          </tr>
 
-        <span style={{ gridColumnStart: '2' }}>
-          {total < TOTAL_REQUIREMENT
-            ? `If you remain in the country, you will pass the Substantial Presence Test on ${dateToValue(
-                passingDate
-              )}`
-            : `You have passed the Substantial Presence Test for ${year}! 🎉`}
-        </span>
+          <tr>
+            <td></td>
+            <td>Total eligible days</td>
+            <td style={{ textAlign: 'right', whiteSpace: 'nowrap' }}>
+              {validDays} / {TOTAL_REQUIREMENT}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div>
+        {validDays >= TOTAL_REQUIREMENT &&
+        currentYearValidDays >= CURRENT_YEAR_REQUIREMENT ? (
+          <>
+            You have passed the Substantial Presence Test for{' '}
+            <span style={{ fontWeight: 'bold' }}>{year}</span>!
+          </>
+        ) : dayOfPassing.getFullYear() === year ? (
+          <>
+            If you remain in the country, you will pass the Substantial Presence
+            Test on{' '}
+            <time
+              style={{ fontWeight: 'bold' }}
+              dateTime={dayOfPassing.toISOString()}
+            >
+              {dayOfPassing.toLocaleDateString()}
+            </time>
+            .
+          </>
+        ) : (
+          <>
+            You cannot pass the Substantial Presence Test in{' '}
+            <span style={{ fontWeight: 'bold' }}>{year}</span>.
+          </>
+        )}
       </div>
     </section>
+  );
+};
+
+const YearPicker = () => {
+  const [year, setYear] = useAtom(yearAtom);
+
+  return (
+    <label>
+      Which year would you like to test for?{' '}
+      <select value={year} onChange={(e) => setYear(+e.currentTarget.value)}>
+        {new Array(NUM_YEARS_TO_INCLUDE).fill(0).map((_, i) => {
+          const year = CURRENT_YEAR - i;
+          return (
+            <option key={year} value={year}>
+              {year}
+            </option>
+          );
+        })}
+      </select>
+    </label>
+  );
+};
+
+const YearCounterRows = () => {
+  return (
+    <>
+      {YEAR_MULTIPLIERS.map((multiplier, i) => {
+        return <YearCounter key={i} yearOffset={i} multiplier={multiplier} />;
+      })}
+    </>
+  );
+};
+
+function startOfYear(year: number) {
+  return new Date(`${year}-01-01`).getTime();
+}
+
+function endOfYear(year: number) {
+  return new Date(`${year}-12-31`).getTime();
+}
+
+function functionalEndOfYear(year: number) {
+  return Math.min(Date.now(), endOfYear(year));
+}
+
+interface YearCounterProps {
+  yearOffset: number;
+  multiplier: number;
+}
+
+const YearCounter: FC<YearCounterProps> = ({ yearOffset, multiplier }) => {
+  const year = useAtomValue(yearAtom) - yearOffset;
+
+  const [yearsDetails, setYearsDetails] = useAtom(yearsDetailsAtom);
+  const details = yearsDetails[year] ?? {
+    present: false,
+    ranges: [
+      {
+        start: startOfYear(year),
+        end: functionalEndOfYear(year),
+      },
+    ],
+  };
+
+  const { totalDays, validDays } = getValidDays(multiplier, details);
+
+  return (
+    <>
+      <tr>
+        <td style={{ width: '75px' }}>{year}</td>
+        <td>
+          <label>
+            I was present{' '}
+            <input
+              type="checkbox"
+              checked={details.present}
+              onChange={(e) =>
+                setYearsDetails({
+                  ...yearsDetails,
+                  [year]: { ...details, present: e.currentTarget.checked },
+                })
+              }
+            />
+          </label>
+        </td>
+        <td style={{ textAlign: 'right', whiteSpace: 'nowrap' }}>
+          {totalDays} × 1/{1 / multiplier} = {validDays}
+        </td>
+      </tr>
+
+      {details.present && (
+        <YearCounterRanges
+          year={year}
+          yearDetails={details}
+          addRange={() => {
+            const previousRange = details.ranges.at(-1)!;
+            setYearsDetails({
+              ...yearsDetails,
+              [year]: {
+                ...details,
+                ranges: [
+                  ...details.ranges,
+                  {
+                    start: addDays(previousRange.end, 1).getTime(),
+                    end: functionalEndOfYear(year),
+                  },
+                ],
+              },
+            });
+          }}
+          removeRange={(i) => {
+            setYearsDetails({
+              ...yearsDetails,
+              [year]: {
+                ...details,
+                ranges: details.ranges.filter((_, j) => i !== j),
+              },
+            });
+          }}
+          setRange={(i, range) => {
+            setYearsDetails({
+              ...yearsDetails,
+              [year]: {
+                ...details,
+                ranges: details.ranges.map((r, j) => (i === j ? range : r)),
+              },
+            });
+          }}
+        />
+      )}
+
+      <tr style={{ height: '10px' }}></tr>
+    </>
+  );
+};
+
+interface YearCounterRangesProps {
+  year: number;
+  yearDetails: YearDetails;
+  addRange: () => void;
+  removeRange: (i: number) => void;
+  setRange: (i: number, range: Range) => void;
+}
+
+const YearCounterRanges: FC<YearCounterRangesProps> = ({
+  year,
+  yearDetails,
+  addRange,
+  removeRange,
+  setRange,
+}) => {
+  return (
+    <>
+      {yearDetails.ranges.map((range, i) => {
+        return (
+          <YearCounterRange
+            key={i}
+            year={year}
+            first={i === 0}
+            lastRemaining={yearDetails.ranges.length === 1}
+            previousRange={yearDetails.ranges[i - 1]}
+            range={range}
+            removeRange={() => removeRange(i)}
+            setStart={(start) => setRange(i, { ...range, start })}
+            setEnd={(end) => setRange(i, { ...range, end })}
+          />
+        );
+      })}
+      <tr>
+        <td></td>
+        <td>
+          <button
+            onClick={addRange}
+            disabled={
+              dateString(yearDetails.ranges.at(-1)!.end) ===
+              dateString(functionalEndOfYear(year))
+            }
+            style={{ borderRadius: '100px' }}
+          >
+            + add range
+          </button>
+        </td>
+      </tr>
+    </>
+  );
+};
+
+function dateString(datetime: number | Date) {
+  return new Date(datetime).toISOString().split('T')[0];
+}
+
+interface YearCounterRangeProps {
+  year: number;
+  first?: boolean;
+  lastRemaining: boolean;
+  previousRange?: YearDetails['ranges'][number];
+  range: YearDetails['ranges'][number];
+  removeRange: () => void;
+  setStart: (start: number) => void;
+  setEnd: (end: number) => void;
+}
+
+const YearCounterRange: FC<YearCounterRangeProps> = ({
+  year,
+  first = false,
+  lastRemaining,
+  previousRange,
+  range,
+  removeRange,
+  setStart,
+  setEnd,
+}) => {
+  return (
+    <tr>
+      <td></td>
+      <td>
+        {!first && 'and '}from{' '}
+        <input
+          type="date"
+          value={dateString(range.start)}
+          onChange={(e) => setStart(new Date(e.currentTarget.value).getTime())}
+          min={dateString(
+            previousRange
+              ? addDays(previousRange.end, 1).getTime()
+              : startOfYear(year)
+          )}
+          max={dateString(range.end)}
+        />{' '}
+        till{' '}
+        <input
+          type="date"
+          value={dateString(range.end)}
+          onChange={(e) => setEnd(new Date(e.currentTarget.value).getTime())}
+          min={dateString(range.start)}
+          max={dateString(functionalEndOfYear(year))}
+        />{' '}
+        <button
+          disabled={lastRemaining}
+          onClick={removeRange}
+          style={{
+            borderRadius: '100px',
+            height: '28px',
+            width: '28px',
+          }}
+        >
+          x
+        </button>
+      </td>
+    </tr>
   );
 };
 
