@@ -113,7 +113,13 @@ const SubstantialPresenceTest = () => {
         </tbody>
       </table>
 
-      <div>
+      <div
+        style={{
+          padding: 'var(--theme-spacing-1)',
+          borderRadius: 'var(--theme-roundness)',
+          backgroundColor: 'rgba(255, 255, 255, 0.1)',
+        }}
+      >
         {validDays >= TOTAL_REQUIREMENT &&
         currentYearValidDays >= CURRENT_YEAR_REQUIREMENT ? (
           <>
