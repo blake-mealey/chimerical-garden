@@ -5,7 +5,6 @@ import clsx from 'clsx';
 import Link from 'next/link';
 import Badge from '../components/Badge';
 import formatDate from '../util/formatDate';
-import Script from 'next/script';
 
 type LayoutProps = {
   slug: string;
