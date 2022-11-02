@@ -26,18 +26,6 @@ const Layout: NextPage<LayoutProps> = ({ children, slug, meta }) => {
 
   return (
     <div className={styles.container}>
-      <Script
-        strategy="afterInteractive"
-        src="https://www.googletagmanager.com/gtag/js?id=UA-144998331-5"
-      />
-      <Script id="google-analytics" strategy="afterInteractive">
-        {`window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-144998331-5');`}
-      </Script>
-
       <Head>
         <title>{title}</title>
         <meta name="description" content={description} />
